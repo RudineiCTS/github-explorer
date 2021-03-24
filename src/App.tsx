@@ -1,10 +1,17 @@
 import React from 'react';
+import {BrowserRouter} from 'react-router-dom';
 
+import Routes from './Routes/index';
 
-function App() {
-  return (
-    <h1>Hello wolrd</h1>
-  )
-}
+import GlobalStyled from './styles/globalStyled';
+
+const App: React.FC = ()=> (
+  <>
+    <BrowserRouter>
+      <Routes/>
+   </BrowserRouter>
+  <GlobalStyled/>
+  </>
+)
 
 export default App;
