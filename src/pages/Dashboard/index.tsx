@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react';
 
-import {Title, Form, Repository} from './styled'
+import {Title, Form, Repository, Error} from './styled'
 import {FiChevronRight} from 'react-icons/fi';
 import logo from '../../assets/logo.svg';
 
@@ -17,19 +17,29 @@ interface Repositories{
 
 
 const Dashboard:React.FC =()=> {
+  const [inputError, setInputError] =useState('')
   const [newRepo, setNewRepo]= useState('');
   const [repositories, setRespositories] = useState<Repositories[]>([]);
 
   async function handleAddRepository
   (event: FormEvent<HTMLFormElement>): Promise<void>{
-
     event.preventDefault();
 
-    const response = await api.get<Repositories>(`repos/${newRepo}`);
-    const repository = response.data;
+    if(!newRepo){
+      setInputError('Digite um repositório')
+      return;
+    }
+    try{
+      const response = await api.get<Repositories>(`repos/${newRepo}`);
+      const repository = response.data;
 
-    setRespositories([...repositories, repository]);
-    console.log(repositories);
+      setRespositories([...repositories, repository]);
+      //se tudo correr corretamente, iremos setar para 0 os dois campos
+      setNewRepo('');
+      setInputError('');
+    }catch(err){
+      setInputError(err.message);
+    }
   }
   return(
     <>
@@ -39,6 +49,7 @@ const Dashboard:React.FC =()=> {
 
       <Form
         onSubmit={handleAddRepository}
+        hasError={!!inputError}
       >
         <input
         type="text"
@@ -47,6 +58,9 @@ const Dashboard:React.FC =()=> {
         placeholder="digite aqui"/>
         <button>Pesquisar</button>
       </Form>
+
+      {/* caso houver algum erro, ira adicionar esse componente na corpo do html */}
+      {inputError && <Error>{inputError}</Error>}
 
       <Repository>
         {repositories.map(repository => (
