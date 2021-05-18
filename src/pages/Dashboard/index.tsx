@@ -7,7 +7,7 @@ import logo from '../../assets/logo.svg';
 
 import api from '../../services/api';
 
-interface Repositories{
+interface Repositories {
   full_name: string;
   description:string;
   owner:{
